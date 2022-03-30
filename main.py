@@ -166,7 +166,7 @@ async def send_random_value(call: types.CallbackQuery):
     im2.close()
     image = Image.open('Gotovo.jpg')
     font = ImageFont.load_default()
-    font.encoding = 'utf-8'
+    font_en = font.encoding = 'utf-8'
     drawer = ImageDraw.Draw(image)
     fill = "#63389c"
     if agent[8].text != "Агент игрока:":
@@ -180,12 +180,12 @@ async def send_random_value(call: types.CallbackQuery):
                                                                                 "") + '\n' + "Ударная нога: " +
                         name_full[7].text.replace("\n", "") +
                         '\n' + "Спонсор: " + name_full[11].text,
-                        font=font, fill=fill)
+                        font=font_en, fill=fill)
         else:
             drawer.text((225, 3),
                         text3 + '\n' + "Национальность: " + nationality.text + '\n' + "Рост: " + growth.text + '\n' + "Имя на родине: " +
                         name_full[0].text,
-                        font=font, fill=fill)
+                        font=font_en, fill=fill)
     else:
         drawer.text((225, 3), text3 + '\n' + "В команде с: " + name_full[10].text.strip().replace("\n",
                                                                                                   "") + '\n' + "Контракт до: " +
@@ -194,7 +194,7 @@ async def send_random_value(call: types.CallbackQuery):
                     name_full[0].text
                     + '\n' + "Место рождения: " + name_full[2].text.replace("\n", "") + '\n' + "Ударная нога: " +
                     name_full[7].text.replace("\n", ""),
-                    font=font, fill=fill)
+                    font=font_en, fill=fill)
     image.save('Final2.jpg')
     new_image2 = open('Final2.jpg', 'rb')
     keyboard = types.InlineKeyboardMarkup()
