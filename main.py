@@ -69,50 +69,47 @@ async def main(message: types.Message):
 
 @dp.message_handler(state=FSMplayer.player_name)
 async def search_player(message: types.Message, state: FSMContext):
-    try:
-        async with state.proxy() as data:
-            data['player_name'] = message.text
-        connect = sqlite3.connect('user_player.db')
-        cursor = connect.cursor()
-        cursor.execute('''CREATE TABLE iF NOT EXISTS player_poisk(player_name, user_id, user_name)''')
-        connect.commit()
-        insert = [data['player_name'], message.chat.id, message.chat.first_name]
-        cursor.execute("INSERT INTO player_poisk VALUES(?, ?, ?);", insert)
-        connect.commit()
-        global text6
-        text6 = data['player_name']
-        list1 = []
-        list2 = []
-        list3 = []
-        headers = {
-            "User-Agent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.82 Safari/537.36'}
-        page = 'https://www.transfermarkt.ru/schnellsuche/ergebnis/schnellsuche?query=' + str(data['player_name'])
-        pageTree = requests.get(page, headers=headers)
-        soup = BeautifulSoup(pageTree.content, 'lxml')
-        info = soup.find_all('td', class_='zentriert')
-        club = soup.find_all('img', class_='tiny_wappen')
-        price = soup.find_all('td', class_='rechts hauptlink')
+    async with state.proxy() as data:
+        data['player_name'] = message.text
+    connect = sqlite3.connect('user_player.db')
+    cursor = connect.cursor()
+    cursor.execute('''CREATE TABLE iF NOT EXISTS player_poisk(player_name, user_id, user_name)''')
+    connect.commit()
+    insert = [data['player_name'], message.chat.id, message.chat.first_name]
+    cursor.execute("INSERT INTO player_poisk VALUES(?, ?, ?);", insert)
+    connect.commit()
+    global text6
+    text6 = data['player_name']
+    list1 = []
+    list2 = []
+    list3 = []
+    headers = {
+        "User-Agent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.82 Safari/537.36'}
+    page = 'https://www.transfermarkt.ru/schnellsuche/ergebnis/schnellsuche?query=' + str(data['player_name'])
+    pageTree = requests.get(page, headers=headers)
+    soup = BeautifulSoup(pageTree.content, 'lxml')
+    info = soup.find_all('td', class_='zentriert')
+    club = soup.find_all('img', class_='tiny_wappen')
+    price = soup.find_all('td', class_='rechts hauptlink')
 
-        searching_res = soup.find('div', class_='table-header')
-        for i2 in club:
-            list2.append(i2.get('alt'))
-        for i3 in price:
-            list3.append(i3.text)
-        await message.answer(searching_res.text.replace('                   ', '') + "(ий)")
-        for i in soup.select("td[class='hauptlink']", limit=1):
-            keyboard_inl = types.InlineKeyboardMarkup()
-            keyboard_inl.add(types.InlineKeyboardButton(text="Показать полную информацию", callback_data='show'))
-            await message.answer(i.text + "\n" + str('Амплуа: ' + info[0].text) + " " + str(info[1].text) + "\n" + str(
-                "Возраст: " + info[2].text) + '\n' + ("Клуб: " + list2[0]) + '\n' + ("Стоимость: " + list3[0]),
-                                 reply_markup=keyboard_inl)
-            del info[0:4]
-            del list2[0]
-            del list3[0]
-        await state.finish()
+    searching_res = soup.find('div', class_='table-header')
+    for i2 in club:
+        list2.append(i2.get('alt'))
+    for i3 in price:
+        list3.append(i3.text)
+    await message.answer(searching_res.text.replace('                   ', '') + "(ий)")
+    for i in soup.select("td[class='hauptlink']", limit=1):
+        keyboard_inl = types.InlineKeyboardMarkup()
+        keyboard_inl.add(types.InlineKeyboardButton(text="Показать полную информацию", callback_data='show'))
+        await message.answer(i.text + "\n" + str('Амплуа: ' + info[0].text) + " " + str(info[1].text) + "\n" + str(
+            "Возраст: " + info[2].text) + '\n' + ("Клуб: " + list2[0]) + '\n' + ("Стоимость: " + list3[0]),
+                             reply_markup=keyboard_inl)
+        del info[0:4]
+        del list2[0]
+        del list3[0]
+    await state.finish()
 
 
-    except:
-        await message.answer("Введен не правильный запрос или ничего не было найдено" + '\n' + 'Введите запрос еще раз')
 
 
 @dp.callback_query_handler(text="show")
