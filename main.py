@@ -164,7 +164,7 @@ async def send_random_value(call: types.CallbackQuery):
     resize.save('Gotovo.jpg', quality=95)
     resize.close()
     im2.close()
-    image = Image.open('D:\Проекты Python\pythonProject3\Gotovo.jpg')
+    image = Image.open('Gotovo.jpg')
     font = ImageFont.truetype("arial.ttf", 30)
     drawer = ImageDraw.Draw(image)
     fill = "#63389c"
