@@ -166,7 +166,6 @@ async def send_random_value(call: types.CallbackQuery):
     im2.close()
     image = Image.open('Gotovo.jpg')
     font = ImageFont.load_default()
-    font.getsize(30)
     drawer = ImageDraw.Draw(image)
     fill = "#63389c"
     if agent[8].text != "Агент игрока:":
