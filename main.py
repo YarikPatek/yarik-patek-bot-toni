@@ -166,6 +166,7 @@ async def send_random_value(call: types.CallbackQuery):
     im2.close()
     image = Image.open('Gotovo.jpg')
     font = ImageFont.load_default()
+    font.getsize(30)
     font_en = font.encoding = 'utf-8'
     drawer = ImageDraw.Draw(image)
     fill = "#63389c"
