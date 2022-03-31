@@ -148,7 +148,7 @@ async def send_random_value(call: types.CallbackQuery):
     name_full = soup.find_all('span', class_='info-table__content info-table__content--bold')
     agent = soup.find_all('span', class_='info-table__content info-table__content--regular')
 
-    url_receiving = soup.find('div', class_='modal-trigger').find('img')
+    url_receiving = soup.find('div', class_='data-header__profile-container').find('img')
     get_url = url_receiving.get('src')
     img = requests.get(get_url)
     img_open = open('Player3.jpg', 'wb')
