@@ -122,92 +122,88 @@ async def search_player(message: types.Message, state: FSMContext):
 
 @dp.callback_query_handler(text="show")
 async def send_random_value(call: types.CallbackQuery):
-    try:
-        c = 0
-        if c >= 1:
-            await bot.delete_message(chat_id=call.from_user.id, message_id=call.message.message_id)
-        name_for_par = []
-        global text3
-        text3 = call.message.text
+    c = 0
+    if c >= 1:
         await bot.delete_message(chat_id=call.from_user.id, message_id=call.message.message_id)
-        headers = {
-            "User-Agent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.82 Safari/537.36'}
-        page = 'https://www.transfermarkt.ru/schnellsuche/ergebnis/schnellsuche?query=' + text6
-        pageTree = requests.get(page, headers=headers)
-        soup = BeautifulSoup(pageTree.content, 'lxml')
-        for i in soup.select("td[class='hauptlink']", limit=7):
-            if i.text in text3:
-                name_for_par.append(i.text)
-        the_right_pl = soup.find('td', class_='hauptlink', text=name_for_par[0]).find('a')
-        global page2
-        get_href = the_right_pl.get('href')
-        page2 = 'https://www.transfermarkt.ru' + get_href
-        pageTree = requests.get(page2, headers=headers)
-        soup = BeautifulSoup(pageTree.content, 'lxml')
-        nationality = soup.find('span', itemprop='nationality')
-        growth = soup.find('span', itemprop='height')
-        name_full = soup.find_all('span', class_='info-table__content info-table__content--bold')
-        agent = soup.find_all('span', class_='info-table__content info-table__content--regular')
+    name_for_par = []
+    global text3
+    text3 = call.message.text
+    await bot.delete_message(chat_id=call.from_user.id, message_id=call.message.message_id)
+    headers = {
+        "User-Agent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.82 Safari/537.36'}
+    page = 'https://www.transfermarkt.ru/schnellsuche/ergebnis/schnellsuche?query=' + text6
+    pageTree = requests.get(page, headers=headers)
+    soup = BeautifulSoup(pageTree.content, 'lxml')
+    for i in soup.select("td[class='hauptlink']", limit=7):
+        if i.text in text3:
+            name_for_par.append(i.text)
+    the_right_pl = soup.find('td', class_='hauptlink', text=name_for_par[0]).find('a')
+    global page2
+    get_href = the_right_pl.get('href')
+    page2 = 'https://www.transfermarkt.ru' + get_href
+    pageTree = requests.get(page2, headers=headers)
+    soup = BeautifulSoup(pageTree.content, 'lxml')
+    nationality = soup.find('span', itemprop='nationality')
+    growth = soup.find('span', itemprop='height')
+    name_full = soup.find_all('span', class_='info-table__content info-table__content--bold')
+    agent = soup.find_all('span', class_='info-table__content info-table__content--regular')
 
-        url_receiving = soup.find('div', class_='modal-trigger').find('img')
-        get_url = url_receiving.get('src')
-        img = requests.get(get_url)
-        img_open = open('Player3.jpg', 'wb')
-        img_open.write(img.content)
-        img_open.close()
-        background = requests.get(
-            'https://thumb.tildacdn.com/tild6536-3238-4531-a131-353263313330/-/resize/824x/-/format/webp/7.jpg')
-        backgr_open = open('background.jpg', 'wb')
-        backgr_open.write(background.content)
-        backgr_open.close()
+    url_receiving = soup.find('div', class_='modal-trigger').find('img')
+    get_url = url_receiving.get('src')
+    img = requests.get(get_url)
+    img_open = open('Player3.jpg', 'wb')
+    img_open.write(img.content)
+    img_open.close()
+    background = requests.get(
+        'https://thumb.tildacdn.com/tild6536-3238-4531-a131-353263313330/-/resize/824x/-/format/webp/7.jpg')
+    backgr_open = open('background.jpg', 'wb')
+    backgr_open.write(background.content)
+    backgr_open.close()
 
-        im1 = Image.open('background.jpg')
-        im2 = Image.open('Player3.jpg')
-        size = (1080, 1080)
-        resize = im1.resize(size)
-        size2 = (208, 271)
-        resize2 = im2.resize(size2)
-        resize.paste(resize2, (3, 3))
-        resize.save('Gotovo.jpg', quality=95)
-        resize.close()
-        im2.close()
-        image = Image.open('Gotovo.jpg')
-        font = ImageFont.truetype('arial.ttf', 30)
-        drawer = ImageDraw.Draw(image)
-        fill = "#63389c"
-        if agent[8].text != "Агент игрока:":
-            if name_full[8].text != "-":
-                drawer.text((225, 3), text3 + '\n' + "В команде с: " + name_full[9].text.strip().replace("\n",
-                                                                                                         "") + '\n' + "Контракт до: " +
-                            name_full[10].text.replace("\n", "") + '\n' + "Национальность: " + nationality.text.strip() + '\n' + "Рост: " + growth.text + '\n' + "Имя на родине: " +
-                            name_full[0].text
-                            + '\n' + "Место рождения: " + name_full[2].text.replace("\n",
-                                                                                    "") + '\n' + "Ударная нога: " +
-                            name_full[7].text.replace("\n", "") +
-                            '\n' + "Спонсор: " + name_full[11].text,
-                            font=font, fill=fill)
-            else:
-                drawer.text((225, 3),
-                            text3 + '\n' + "Национальность: " + nationality.text.strip() + '\n' + "Рост: " + growth.text + '\n' + "Имя на родине: " +
-                            name_full[0].text,
-                            font=font, fill=fill)
-        else:
-            drawer.text((225, 3), text3 + '\n' + "В команде с: " + name_full[10].text.strip().replace("\n",
-                                                                                                      "") + '\n' + "Контракт до: " +
-                        name_full[11].text.replace("\n", "") + '\n' + "Национальность: " + nationality.text.strip() + '\n' + "Рост: " + growth.text + '\n' + "Имя на родине: " +
+    im1 = Image.open('background.jpg')
+    im2 = Image.open('Player3.jpg')
+    size = (1080, 1080)
+    resize = im1.resize(size)
+    size2 = (208, 271)
+    resize2 = im2.resize(size2)
+    resize.paste(resize2, (3, 3))
+    resize.save('Gotovo.jpg', quality=95)
+    resize.close()
+    im2.close()
+    image = Image.open('Gotovo.jpg')
+    font = ImageFont.truetype('arial.ttf', 30)
+    drawer = ImageDraw.Draw(image)
+    fill = "#63389c"
+    if agent[8].text != "Агент игрока:":
+        if name_full[8].text != "-":
+            drawer.text((225, 3), text3 + '\n' + "В команде с: " + name_full[9].text.strip().replace("\n",
+                                                                                                     "") + '\n' + "Контракт до: " +
+                        name_full[10].text.replace("\n", "") + '\n' + "Национальность: " + nationality.text.strip() + '\n' + "Рост: " + growth.text + '\n' + "Имя на родине: " +
                         name_full[0].text
-                        + '\n' + "Место рождения: " + name_full[2].text.replace("\n", "") + '\n' + "Ударная нога: " +
-                        name_full[7].text.replace("\n", ""),
+                        + '\n' + "Место рождения: " + name_full[2].text.replace("\n",
+                                                                                "") + '\n' + "Ударная нога: " +
+                        name_full[7].text.replace("\n", "") +
+                        '\n' + "Спонсор: " + name_full[11].text,
                         font=font, fill=fill)
-        image.save('Final2.jpg')
-        new_image2 = open('Final2.jpg', 'rb')
-        keyboard = types.InlineKeyboardMarkup()
-        keyboard.add(types.InlineKeyboardButton(text="Назад", callback_data='brie'))
-        await bot.send_photo(chat_id=call.message.chat.id, photo=new_image2, reply_markup=keyboard)
-        c += 1
-    except:
-        await call.message.answer(
-            f"К сожалению не удалось найти полную информацию о данном игроке, при желании вы можете посмотреть ее здесь {page2}")
+        else:
+            drawer.text((225, 3),
+                        text3 + '\n' + "Национальность: " + nationality.text.strip() + '\n' + "Рост: " + growth.text + '\n' + "Имя на родине: " +
+                        name_full[0].text,
+                        font=font, fill=fill)
+    else:
+        drawer.text((225, 3), text3 + '\n' + "В команде с: " + name_full[10].text.strip().replace("\n",
+                                                                                                  "") + '\n' + "Контракт до: " +
+                    name_full[11].text.replace("\n", "") + '\n' + "Национальность: " + nationality.text.strip() + '\n' + "Рост: " + growth.text + '\n' + "Имя на родине: " +
+                    name_full[0].text
+                    + '\n' + "Место рождения: " + name_full[2].text.replace("\n", "") + '\n' + "Ударная нога: " +
+                    name_full[7].text.replace("\n", ""),
+                    font=font, fill=fill)
+    image.save('Final2.jpg')
+    new_image2 = open('Final2.jpg', 'rb')
+    keyboard = types.InlineKeyboardMarkup()
+    keyboard.add(types.InlineKeyboardButton(text="Назад", callback_data='brie'))
+    await bot.send_photo(chat_id=call.message.chat.id, photo=new_image2, reply_markup=keyboard)
+    c += 1
 
 
 @dp.callback_query_handler(text='brie')
