@@ -1,0 +1,7 @@
+aiogram==2.19
+requests==2.27.1
+Pillow==9.0.1
+beautifulsoup4==4.10.0
+lxml==4.7.1
+asyncio==3.4.3
+psycopg2==2.9.3
