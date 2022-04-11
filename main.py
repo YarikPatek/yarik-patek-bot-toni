@@ -50,7 +50,7 @@ async def start_msg(message: types.Message):
 """
                            ,
                            reply_markup=keyboard)
-    DB_URL = 'postgres://ekigmvbjsrptip:f541b3f489959221c9b1efaed585d5b70d3588e00da073782082c16334a47f0a@ec2-52-212-228-71.eu-west-1.compute.amazonaws.com:5432/devhd41u5a0bjp'
+    DB_URL = 'postgres://hckxwdjshttado:9dfe7557d68d114e9b6bac4c188fcce55f9fc8880dec12dc9022c25cc0894a68@ec2-52-18-116-67.eu-west-1.compute.amazonaws.com:5432/dp5c450sd3he3'
     connect = psycopg2.connect(DB_URL, sslmode="require")
     cursor = connect.cursor()
     people_id = message.chat.id
